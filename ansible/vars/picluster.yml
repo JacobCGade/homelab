@@ -10,10 +10,14 @@
 k3s_version: v1.33.2+k3s1
 
 # k3s master node VIP (loadbalancer)
-k3s_api_vip: 10.0.0.11
+k3s_api_vip: 10.0.0.12
 
 # k3s shared token
 k3s_token: "{{ vault.cluster.k3s.token }}"
+
+# Force cluster initialization for single-node setup
+k3s_build_cluster: true
+k3s_primary_control_node: true
 
 # k3s config directory
 k3s_config_directory: /etc/rancher/k3s
@@ -65,8 +69,9 @@ k3s_server_config:
     - traefik
     - metrics-server
   write-kubeconfig-mode: 644
-  node-taint:
-    - 'node-role.kubernetes.io/control-plane:NoSchedule'
+  # Removed NoSchedule taint for single-node cluster to allow workloads
+  # node-taint:
+  #   - 'node-role.kubernetes.io/control-plane:NoSchedule'
   etcd-expose-metrics: true
   kubelet-arg:
     - 'config=/etc/rancher/k3s/kubelet.config'
@@ -126,21 +131,19 @@ linkerd_dashboard_dns: "linkerd.{{ dns_domain }}"
 # Enable letsencrypt certificates
 enable_letsencrypt: true
 
-# IONOS API credentials
-ionos_public_prefix: "{{ vault.certmanager.ionos.public_prefix }}"
-ionos_secret: "{{ vault.certmanager.ionos.secret }}"
-ionos_api_endpoint: https://api.hosting.ionos.com
+# Cloudflare API credentials
+cloudflare_api_token: "{{ vault.certmanager.cloudflare.api_token }}"
 
 
 # issuer email
-acme_issuer_email: admin@ricsanfre.com
+acme_issuer_email: jacobcgade@gmail.com
 
 ##########################
 # Minio S3 configuration #
 ##########################
 
 # Minio S3 Server
-minio_hostname: "s3.ricsanfre.com"
+minio_hostname: "s3.homelab.jacobgade.com"
 minio_endpoint: "{{ minio_hostname }}:9091"
 minio_url: "https://{{ minio_hostname }}:9091"
 
@@ -154,7 +157,7 @@ minio_root_user: "root"
 minio_root_password: "{{ vault.minio.root.key }}"
 
 # Minio site region configuration
-minio_site_region: "eu-west-1"
+minio_site_region: "eu-west-1" #TODO
 
 # Enabling TLS
 minio_enable_tls: true
@@ -162,6 +165,9 @@ minio_validate_certificate: false
 
 # Create Prometheus bearer token
 minio_prometheus_bearer_token: true
+
+# Disable site replication (fix for conditional bug)
+replication_sites: false
 
 # Minio Buckets
 minio_buckets:

@@ -6,7 +6,7 @@
   become: true
   changed_when: false
   when: minio_prom_bearer_token is not defined
-  delegate_to: s3
+  delegate_to: "{{ groups['s3'][0] }}"
 
 - name: Get bearer token
   set_fact:

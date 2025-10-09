@@ -86,8 +86,10 @@ vault:
   # Certmanager
   certmanager:
     ionos:
-      public_prefix: {{ ionos_public_prefix }}
-      secret: {{ ionos_secret }}
+      public_prefix: dummy
+      secret: dummy
+    cloudflare:
+      api_token: {{ cloudflare_api_token }}
   # PostgreSQL
   postgresql:
     admin:

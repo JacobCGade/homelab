@@ -7,6 +7,7 @@ services:
     command: tail -f /dev/null
     container_name: ansible-runner
     restart: unless-stopped
+    network_mode: host
     volumes:
       - ./../ansible:/runner
       - ./../kubernetes:/kubernetes

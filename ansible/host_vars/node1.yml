@@ -40,28 +40,13 @@ bind9_zones:
       - label: node2
         type: A
         rdata: 10.0.0.12
-      - label: node3
-        type: A
-        rdata: 10.0.0.13
-      - label: node4
-        type: A
-        rdata: 10.0.0.14
-      - label: node5
-        type: A
-        rdata: 10.0.0.15
-      - label: node6
-        type: A
-        rdata: 10.0.0.16
-      - label: node-hp-1
-        type: A
-        rdata: 10.0.0.20
-      - label: node-hp-2
-        type: A
-        rdata: 10.0.0.21
-      - label: node-hp-3
-        type: A
-        rdata: 10.0.0.22
       - label: vault
+        type: A
+        rdata: 10.0.0.11
+      - label: s3
+        type: A
+        rdata: 10.0.0.11
+      - label: minio
         type: A
         rdata: 10.0.0.11
   - name: 0.10.in-addr.arpa
@@ -85,27 +70,6 @@ bind9_zones:
       - label: 12.0
         type: PTR
         rdata: "node2.{{ dns_domain }}."
-      - label: 13.0
-        type: PTR
-        rdata: "node3.{{ dns_domain }}."
-      - label: 14.0
-        type: PTR
-        rdata: "node4.{{ dns_domain }}."
-      - label: 15.0
-        type: PTR
-        rdata: "node5.{{ dns_domain }}."
-      - label: 16.0
-        type: PTR
-        rdata: "node6.{{ dns_domain }}."
-      - label: 20.0
-        type: PTR
-        rdata: "node-hp-1.{{ dns_domain }}."
-      - label: 21.0
-        type: PTR
-        rdata: "node-hp-2.{{ dns_domain }}."
-      - label: 22.0
-        type: PTR
-        rdata: "node-hp-3.{{ dns_domain }}."
 
 ############################
 # restic backup role variables

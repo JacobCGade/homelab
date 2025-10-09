@@ -11,17 +11,17 @@
 
 open_iscsi_automatic_startup: true
 open_iscsi_targets:
-  - name: gateway-target
+  - name: node1-target
     discover: true
     auto_portal_startup: true
     auto_node_startup: true
-    portal: 10.0.0.1
-    target: iqn.2021-07.com.ricsanfre:gateway
+    portal: 10.0.0.11
+    target: iqn.2025-01.com.jacobgade:node1
     login: true
     node_auth: CHAP
     node_user: "{{ open_iscsi_initiator_name }}"
     node_pass: "{{ vault.san.iscsi.node_pass }}"
-    node_user_in: iqn.2021-07.com.ricsanfre:gateway
+    node_user_in: iqn.2025-01.com.jacobgade:node1
     node_pass_in: "{{ vault.san.iscsi.password_mutual }}"
 
 #############################################

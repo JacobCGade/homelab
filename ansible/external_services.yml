@@ -16,23 +16,23 @@
     - name: Include picluster variables
       include_vars: "vars/picluster.yml"
 
-    - name: Copy ionos secret file
+    - name: Copy cloudflare secret file
       template:
         src: "{{ item.template }}"
         dest: "{{ item.dest }}"
         mode: 0600
       with_items:
-        - template: ionos-credentials.ini.j2
-          dest: "~/.secrets/ionos-credentials.ini"
+        - template: cloudflare-credentials.ini.j2
+          dest: "~/.secrets/cloudflare-credentials.ini"
       when: enable_letsencrypt
 
   tasks:
     - name: Create Letsencrytp certificate for external services
       command: |
         certbot certonly \
-        --authenticator dns-ionos \
-        --dns-ionos-credentials ~/.secrets/ionos-credentials.ini \
-        --dns-ionos-propagation-seconds {{ propagation_seconds }} \
+        --authenticator dns-cloudflare \
+        --dns-cloudflare-credentials ~/.secrets/cloudflare-credentials.ini \
+        --dns-cloudflare-propagation-seconds {{ propagation_seconds }} \
         --server https://acme-v02.api.letsencrypt.org/directory \
         --agree-tos \
         --non-interactive \

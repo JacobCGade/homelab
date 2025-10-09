@@ -76,7 +76,8 @@
     - name: label k3s worker nodes
       command:
         cmd: "kubectl label nodes {{ item }} kubernetes.io/role=worker"
-      with_items: "{{ groups['k3s_worker'] }}"
+      with_items: "{{ groups['k3s_worker'] | default([]) }}"
+      when: groups['k3s_worker'] is defined and groups['k3s_worker'] | length > 0
 
 - name: Get Kubernets config file
   hosts: k3s_master
