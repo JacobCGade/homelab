@@ -1,6 +1,6 @@
 ---
 
-- name: "Wait for K3S worker nodes to be ready. Nodes Ready status when Cilium has been installed"
+- name: "Wait for K3S nodes to be ready. Nodes Ready status when Cilium has been installed"
   command:
     cmd: "kubectl get nodes {{ item }}"
   register: nodes
@@ -8,7 +8,7 @@
     - '" Ready "  in nodes.stdout'
   retries: 10
   delay: 60
-  with_items: "{{ groups['k3s_worker'] }}"
+  with_items: "{{ groups['k3s_master'] + (groups['k3s_worker'] | default([])) }}"
 
 - name: Wait for Cilium CRDs to be ready
   become: false
