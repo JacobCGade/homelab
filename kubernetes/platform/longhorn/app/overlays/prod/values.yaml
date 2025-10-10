@@ -1,1 +1,13 @@
 # longhorn helm values (prod overlay)
+
+# Prevent UUID conflicts with centralized SAN
+defaultSettings:
+  createDefaultDiskLabeledNodes: false
+  defaultDataPath: "/storage"
+  disableSchedulingOnCordonedNode: true
+  replicaSoftAntiAffinity: false
+
+# Pre-configure storage for SAN integration
+longhornManager:
+  nodeSelector:
+    kubernetes.io/arch: arm64
