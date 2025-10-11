@@ -24,16 +24,25 @@ all:
           hostname: node2
           ansible_host: 10.0.0.12
           ip: 10.0.0.12
-          mac: e4:5f:01:2d:fd:19 # To be updated when node2 is setup
+          mac: e4:5f:01:2d:fd:19
+          ansible_ssh_common_args: '-o ProxyCommand="ssh -W %h:%p root@192.168.0.21"'
+        node3:
+          hostname: node3
+          ansible_host: 10.0.0.13
+          ip: 10.0.0.13
+          mac: 2c:cf:67:db:6b:46
           ansible_ssh_common_args: '-o ProxyCommand="ssh -W %h:%p root@192.168.0.21"'
     raspberrypi:
       hosts:
-        node[1:2]:
+        node[1:3]:
     k3s_cluster:
       children:
         k3s_master:
           hosts:
             node2:
+        k3s_worker:
+          hosts:
+            node3:
     dns:
       hosts:
         node1:
