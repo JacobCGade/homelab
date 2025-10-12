@@ -11,18 +11,11 @@ spec:
     email: jacobcgade@gmail.com
     # Name of a secret used to store the ACME account private key
     privateKeySecretRef:
-      name: letsencrypt-ionos-prod
+      name: letsencrypt-cloudflare-prod
     # Enable the dns01 challenge provider
     solvers:
       - dns01:
-          webhook:
-            groupName: acme.jacobgade.com
-            solverName: ionos
-            config:
-              apiUrl: https://api.hosting.ionos.com/dns/v1
-              publicKeySecretRef:
-                key: IONOS_PUBLIC_PREFIX
-                name: ionos-secret
-              secretKeySecretRef:
-                key: IONOS_SECRET
-                name: ionos-secret
+          cloudflare:
+            apiTokenSecretRef:
+              name: cloudflare-api-token
+              key: api-token

@@ -6,3 +6,4 @@ resources:
   - ../../base
   - ionos-externalsecret.yaml
   - ionos-issuer.yaml
+  - cloudflare-externalsecret.yaml
