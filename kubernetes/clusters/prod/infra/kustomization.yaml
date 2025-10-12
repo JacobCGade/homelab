@@ -6,24 +6,25 @@ resources:
   - cloudnative-pg-app.yaml
   - coredns-app.yaml
   - csi-external-snapshotter-app.yaml
-  - elastic-stack-app.yaml
+  # Temporarily disabled heavy apps to stabilize cluster
+  # - elastic-stack-app.yaml
   - external-dns-app.yaml
   - external-secrets-app.yaml
-  - fluent-app.yaml
+  # - fluent-app.yaml
   - flux-app.yaml
   - grafana-app.yaml
   - istio-app.yaml
-  - kafka-app.yaml
+  # - kafka-app.yaml
   - kiali-app.yaml
-  - keycloak-app.yaml
+  # - keycloak-app.yaml
   - kube-prometheus-stack-app.yaml
-  - loki-app.yaml
+  # - loki-app.yaml
   - longhorn-app.yaml
   - metrics-server-app.yaml
-  - minio-app.yaml
-  - mongodb-operator-app.yaml
+  # - minio-app.yaml
+  # - mongodb-operator-app.yaml
   - nginx-app.yaml
   - oauth2-proxy-app.yaml
   - system-upgrade-app.yaml
-  - tempo-app.yaml
-  - velero-app.yaml
+  # - tempo-app.yaml
+  # - velero-app.yaml
