@@ -102,6 +102,12 @@ monitoring:
 test:
   enabled: false
 
+# Disable caches to save memory (using S3 backend anyway)
+chunksCache:
+  enabled: false
+resultsCache:
+  enabled: false
+
 # Enable Promtail for log collection
 promtail:
   enabled: true
