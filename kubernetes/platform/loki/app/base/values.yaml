@@ -1,28 +1,34 @@
 # loki helm values (base)
+# Optimized for 2-node homelab cluster
 
-# Setting simple scalable deployment mode
-deploymentMode: SimpleScalable
+# Use SingleBinary mode for minimal resource usage
+deploymentMode: SingleBinary
 
 loki:
   # Disable multi-tenant support
   auth_enabled: false
 
-  # S3 backend storage configuration
+  # Common config for single binary
+  commonConfig:
+    replication_factor: 1
+
+  # S3 backend storage configuration - using external Minio on node1
   storage:
     bucketNames:
       chunks: k3s-loki
       ruler: k3s-loki
     type: s3
     s3:
-      endpoint: minio.minio:9000
+      endpoint: 10.0.0.11:9091
       secretAccessKey: ${MINIO_SECRET_ACCESS_KEY}
       accessKeyId: ${MINIO_ACCESS_KEY_ID}
       s3ForcePathStyle: true
-      insecure: true
+      insecure: false
       http_config:
         idle_conn_timeout: 90s
         response_header_timeout: 0s
-        insecure_skip_verify: false
+        insecure_skip_verify: true
+
   # Storage Schema
   schemaConfig:
     configs:
@@ -34,92 +40,52 @@ loki:
       object_store: s3
       schema: v13
 
-# Configuration for the write
+# SingleBinary configuration
+singleBinary:
+  replicas: 1
+  persistence:
+    size: 2Gi
+    storageClass: longhorn
+  resources:
+    requests:
+      cpu: 100m
+      memory: 256Mi
+    limits:
+      memory: 512Mi
+  extraArgs:
+    - '-config.expand-env=true'
+  extraEnv:
+    - name: MINIO_ACCESS_KEY_ID
+      valueFrom:
+        secretKeyRef:
+          name: loki-minio-secret
+          key: MINIO_ACCESS_KEY_ID
+    - name: MINIO_SECRET_ACCESS_KEY
+      valueFrom:
+        secretKeyRef:
+          name: loki-minio-secret
+          key: MINIO_SECRET_ACCESS_KEY
+
+# Disable distributed components (not needed in SingleBinary mode)
 write:
-  # Number of replicas for the write
-  replicas: 2
-  persistence:
-    # -- Size of persistent disk
-    size: 1Gi
-    # -- Storage class to be used.
-    storageClass: longhorn
-
-  # Enable environment variables in config file
-  # https://grafana.com/docs/loki/latest/configuration/#use-environment-variables-in-the-configuration
-  extraArgs:
-    - '-config.expand-env=true'
-  extraEnv:
-    - name: MINIO_ACCESS_KEY_ID
-      valueFrom:
-        secretKeyRef:
-          name: loki-minio-secret
-          key: MINIO_ACCESS_KEY_ID
-    - name: MINIO_SECRET_ACCESS_KEY
-      valueFrom:
-        secretKeyRef:
-          name: loki-minio-secret
-          key: MINIO_SECRET_ACCESS_KEY
-
-# Configuration for the read
+  replicas: 0
 read:
-  # Number of replicas for the read
-  replicas: 2
-  persistence:
-    # -- Size of persistent disk
-    size: 1Gi
-    # -- Storage class to be used.
-    storageClass: longhorn
-
-  # Enable environment variables in config file
-  # https://grafana.com/docs/loki/latest/configuration/#use-environment-variables-in-the-configuration
-  extraArgs:
-    - '-config.expand-env=true'
-  extraEnv:
-    - name: MINIO_ACCESS_KEY_ID
-      valueFrom:
-        secretKeyRef:
-          name: loki-minio-secret
-          key: MINIO_ACCESS_KEY_ID
-    - name: MINIO_SECRET_ACCESS_KEY
-      valueFrom:
-        secretKeyRef:
-          name: loki-minio-secret
-          key: MINIO_SECRET_ACCESS_KEY
-
-# Configuration for the backend
+  replicas: 0
 backend:
-  # Number of replicas for the backend
-  replicas: 3
-  persistence:
-    # -- Size of persistent disk
-    size: 1Gi
-    # -- Storage class to be used.
-    storageClass: longhorn
-
-  # Enable environment variables in config file
-  # https://grafana.com/docs/loki/latest/configuration/#use-environment-variables-in-the-configuration
-  extraArgs:
-    - '-config.expand-env=true'
-  extraEnv:
-    - name: MINIO_ACCESS_KEY_ID
-      valueFrom:
-        secretKeyRef:
-          name: loki-minio-secret
-          key: MINIO_ACCESS_KEY_ID
-    - name: MINIO_SECRET_ACCESS_KEY
-      valueFrom:
-        secretKeyRef:
-          name: loki-minio-secret
-          key: MINIO_SECRET_ACCESS_KEY
+  replicas: 0
 
 # Configuration for the gateway
 gateway:
-  # -- Specifies whether the gateway should be enabled
   enabled: true
-  # -- Number of replicas for the gateway
   replicas: 1
+  resources:
+    requests:
+      cpu: 50m
+      memory: 64Mi
+    limits:
+      memory: 128Mi
 
-# Disable mino installation
+# Disable minio installation (using external)
 minio:
   enabled: false
 
@@ -130,8 +96,21 @@ monitoring:
     grafanaAgent:
       installOperator: false
   lokiCanary:
-      enabled: false
+    enabled: false
 
 # Disable helm-test
 test:
   enabled: false
+
+# Enable Promtail for log collection
+promtail:
+  enabled: true
+  resources:
+    requests:
+      cpu: 50m
+      memory: 64Mi
+    limits:
+      memory: 128Mi
+  config:
+    clients:
+      - url: http://loki-gateway.loki.svc.cluster.local/loki/api/v1/push

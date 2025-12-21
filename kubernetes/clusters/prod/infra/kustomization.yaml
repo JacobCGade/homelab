@@ -3,7 +3,8 @@ kind: Kustomization
 resources:
   - cert-manager-app.yaml
   - cilium-app.yaml
-  - cloudnative-pg-app.yaml
+  # Removed - no PostgreSQL clusters deployed
+  # - cloudnative-pg-app.yaml
   - coredns-app.yaml
   - csi-external-snapshotter-app.yaml
   # Temporarily disabled heavy apps to stabilize cluster
@@ -15,16 +16,16 @@ resources:
   - grafana-app.yaml
   - istio-app.yaml
   # - kafka-app.yaml
-  - kiali-app.yaml
+  # - kiali-app.yaml  # Depends on Keycloak which is not deployed
   # - keycloak-app.yaml
   - kube-prometheus-stack-app.yaml
-  # - loki-app.yaml
+  - loki-app.yaml
   - longhorn-app.yaml
   - metrics-server-app.yaml
-  # - minio-app.yaml
+  # - minio-app.yaml  # Using external Minio on node1
   # - mongodb-operator-app.yaml
   - nginx-app.yaml
-  - oauth2-proxy-app.yaml
+  # - oauth2-proxy-app.yaml  # Depends on Keycloak which is not deployed
   - system-upgrade-app.yaml
-  # - tempo-app.yaml
+  - tempo-app.yaml
   # - velero-app.yaml

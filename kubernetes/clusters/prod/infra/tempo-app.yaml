@@ -12,7 +12,7 @@ spec:
     name: flux-system
   dependsOn:
     - name: external-secrets-config
-    - name: minio-app
+    # Using external Minio on node1 instead of in-cluster minio-app
   path: ./kubernetes/platform/tempo/app/overlays/prod
   prune: true
   wait: true

@@ -1,121 +1,74 @@
 # tempo helm values (base)
+# Optimized for 2-node homelab cluster - single binary mode
 
-# Enable trace ingestion
-traces:
-  otlp:
-    grpc:
-      enabled: true
-    http:
-      enabled: true
-  zipkin:
-    enabled: true
-  jaeger:
-    thriftCompact:
-      enabled: true
-    thriftHttp:
-      enabled: true
-  opencensus:
-    enabled: true
+# Resource configuration
+resources:
+  requests:
+    cpu: 100m
+    memory: 256Mi
+  limits:
+    memory: 512Mi
 
-# Configure S3 backend
-storage:
-  trace:
-    backend: s3
-    s3:
-      bucket: k3s-tempo
-      endpoint: minio.minio:9000
-      access_key: ${MINIO_ACCESS_KEY_ID}
-      secret_key: ${MINIO_SECRET_ACCESS_KEY}
-      insecure: true
+# Persistence
+persistence:
+  enabled: true
+  size: 2Gi
+  storageClassName: longhorn
 
-# Configure distributor
-distributor:
-  config:
-    log_received_spans:
-      enabled: true
-  # Enable environment variables in config file
-  # https://grafana.com/docs/tempo/latest/configuration/#use-environment-variables-in-the-configuration
-  extraArgs:
-    - '-config.expand-env=true'
-  extraEnv:
-    - name: MINIO_ACCESS_KEY_ID
-      valueFrom:
-        secretKeyRef:
-          name: tempo-minio-secret
-          key: MINIO_ACCESS_KEY_ID
-    - name: MINIO_SECRET_ACCESS_KEY
-      valueFrom:
-        secretKeyRef:
-          name: tempo-minio-secret
-          key: MINIO_SECRET_ACCESS_KEY
-# Configure ingester
-ingester:
-  # Enable environment variables in config file
-  # https://grafana.com/docs/tempo/latest/configuration/#use-environment-variables-in-the-configuration
-  extraArgs:
-    - '-config.expand-env=true'
-  extraEnv:
-    - name: MINIO_ACCESS_KEY_ID
-      valueFrom:
-        secretKeyRef:
-          name: tempo-minio-secret
-          key: MINIO_ACCESS_KEY_ID
-    - name: MINIO_SECRET_ACCESS_KEY
-      valueFrom:
-        secretKeyRef:
-          name: tempo-minio-secret
-          key: MINIO_SECRET_ACCESS_KEY
-# Configure compactor
-compactor:
-  # Enable environment variables in config file
-  # https://grafana.com/docs/tempo/latest/configuration/#use-environment-variables-in-the-configuration
-  extraArgs:
-    - '-config.expand-env=true'
-  extraEnv:
-    - name: MINIO_ACCESS_KEY_ID
-      valueFrom:
-        secretKeyRef:
-          name: tempo-minio-secret
-          key: MINIO_ACCESS_KEY_ID
-    - name: MINIO_SECRET_ACCESS_KEY
-      valueFrom:
-        secretKeyRef:
-          name: tempo-minio-secret
-          key: MINIO_SECRET_ACCESS_KEY
-# Configure querier
-querier:
-  # Enable environment variables in config file
-  # https://grafana.com/docs/tempo/latest/configuration/#use-environment-variables-in-the-configuration
-  extraArgs:
-    - '-config.expand-env=true'
-  extraEnv:
-    - name: MINIO_ACCESS_KEY_ID
-      valueFrom:
-        secretKeyRef:
-          name: tempo-minio-secret
-          key: MINIO_ACCESS_KEY_ID
-    - name: MINIO_SECRET_ACCESS_KEY
-      valueFrom:
-        secretKeyRef:
-          name: tempo-minio-secret
-          key: MINIO_SECRET_ACCESS_KEY
-# Configure query-frontend
-queryFrontend:
-  # Enable environment variables in config file
-  # https://grafana.com/docs/tempo/latest/configuration/#use-environment-variables-in-the-configuration
-  extraArgs:
-    - '-config.expand-env=true'
-  extraEnv:
-    - name: MINIO_ACCESS_KEY_ID
-      valueFrom:
-        secretKeyRef:
-          name: tempo-minio-secret
-          key: MINIO_ACCESS_KEY_ID
-    - name: MINIO_SECRET_ACCESS_KEY
-      valueFrom:
-        secretKeyRef:
-          name: tempo-minio-secret
-          key: MINIO_SECRET_ACCESS_KEY
-# Disable Minio server installation
-minio:
-  enabled: false
+# Tempo configuration
+tempo:
+  # Enable trace receivers
+  receivers:
+    otlp:
+      protocols:
+        grpc:
+          endpoint: "0.0.0.0:4317"
+        http:
+          endpoint: "0.0.0.0:4318"
+    zipkin:
+      endpoint: "0.0.0.0:9411"
+    jaeger:
+      protocols:
+        thrift_compact:
+          endpoint: "0.0.0.0:6831"
+        thrift_http:
+          endpoint: "0.0.0.0:14268"
+
+  # S3 storage backend - external Minio on node1
+  storage:
+    trace:
+      backend: s3
+      s3:
+        bucket: k3s-tempo
+        endpoint: 10.0.0.11:9091
+        access_key: ${MINIO_ACCESS_KEY_ID}
+        secret_key: ${MINIO_SECRET_ACCESS_KEY}
+        insecure: false
+        insecure_skip_verify: true
+
+  # Retention
+  retention: 72h
+
+  # Query configuration
+  query_frontend: {}
+
+# Extra environment variables for S3 credentials
+extraEnv:
+  - name: MINIO_ACCESS_KEY_ID
+    valueFrom:
+      secretKeyRef:
+        name: tempo-minio-secret
+        key: MINIO_ACCESS_KEY_ID
+  - name: MINIO_SECRET_ACCESS_KEY
+    valueFrom:
+      secretKeyRef:
+        name: tempo-minio-secret
+        key: MINIO_SECRET_ACCESS_KEY
+
+# Extra args to expand environment variables
+extraArgs:
+  - "-config.expand-env=true"
+
+# Service monitor for Prometheus
+serviceMonitor:
+  enabled: true

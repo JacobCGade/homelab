@@ -40,7 +40,8 @@ datasources:
       type: loki
       uid: loki
       access: proxy
-      url: http://loki-read-headless.loki.svc.cluster.local:3100
+      # Updated for SingleBinary mode
+      url: http://loki-gateway.loki.svc.cluster.local:80
       jsonData:
         derivedFields:
             # Traefik traces integration
@@ -57,7 +58,8 @@ datasources:
       uid: tempo
       type: tempo
       access: proxy
-      url: http://tempo-query-frontend-discovery.tempo.svc.cluster.local:3200
+      # Updated for single binary mode
+      url: http://tempo.tempo.svc.cluster.local:3100
 ##
 ## Provisioning sidecars
 ##
