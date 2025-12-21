@@ -43,7 +43,8 @@ tempo:
         endpoint: 10.0.0.11:9091
         access_key: ${MINIO_ACCESS_KEY_ID}
         secret_key: ${MINIO_SECRET_ACCESS_KEY}
-        insecure: true
+        insecure: false
+        tls_insecure_skip_verify: true
 
   # Retention
   retention: 72h
