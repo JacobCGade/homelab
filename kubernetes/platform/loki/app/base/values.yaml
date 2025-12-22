@@ -19,7 +19,7 @@ loki:
       ruler: k3s-loki
     type: s3
     s3:
-      endpoint: https://10.0.0.11:9091
+      endpoint: https://s3.homelab.jacobgade.com:9091
       secretAccessKey: ${MINIO_SECRET_ACCESS_KEY}
       accessKeyId: ${MINIO_ACCESS_KEY_ID}
       s3ForcePathStyle: true
@@ -27,7 +27,7 @@ loki:
       http_config:
         idle_conn_timeout: 90s
         response_header_timeout: 0s
-        insecure_skip_verify: true
+        insecure_skip_verify: false
 
   # Storage Schema
   schemaConfig:

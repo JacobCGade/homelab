@@ -40,7 +40,7 @@ tempo:
       backend: s3
       s3:
         bucket: k3s-tempo
-        endpoint: 10.0.0.11:9091
+        endpoint: s3.homelab.jacobgade.com:9091
         access_key: ${MINIO_ACCESS_KEY_ID}
         secret_key: ${MINIO_SECRET_ACCESS_KEY}
         insecure: false
