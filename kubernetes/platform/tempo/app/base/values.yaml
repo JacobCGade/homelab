@@ -1,22 +1,22 @@
 # tempo helm values (base)
 # Optimized for 2-node homelab cluster - single binary mode
 
-# Resource configuration
-resources:
-  requests:
-    cpu: 100m
-    memory: 256Mi
-  limits:
-    memory: 512Mi
-
 # Persistence
 persistence:
   enabled: true
   size: 2Gi
   storageClassName: longhorn
 
-# Tempo configuration
+# Tempo configuration - all pod settings must be under this key
 tempo:
+  # Resource configuration
+  resources:
+    requests:
+      cpu: 100m
+      memory: 256Mi
+    limits:
+      memory: 512Mi
+
   # Enable trace receivers
   receivers:
     otlp:
@@ -50,22 +50,22 @@ tempo:
   # Query configuration
   query_frontend: {}
 
-# Extra environment variables for S3 credentials
-extraEnv:
-  - name: MINIO_ACCESS_KEY_ID
-    valueFrom:
-      secretKeyRef:
-        name: tempo-minio-secret
-        key: MINIO_ACCESS_KEY_ID
-  - name: MINIO_SECRET_ACCESS_KEY
-    valueFrom:
-      secretKeyRef:
-        name: tempo-minio-secret
-        key: MINIO_SECRET_ACCESS_KEY
+  # Extra environment variables for S3 credentials
+  extraEnv:
+    - name: MINIO_ACCESS_KEY_ID
+      valueFrom:
+        secretKeyRef:
+          name: tempo-minio-secret
+          key: MINIO_ACCESS_KEY_ID
+    - name: MINIO_SECRET_ACCESS_KEY
+      valueFrom:
+        secretKeyRef:
+          name: tempo-minio-secret
+          key: MINIO_SECRET_ACCESS_KEY
 
-# Extra args to expand environment variables
-extraArgs:
-  - "-config.expand-env=true"
+  # Extra args to expand environment variables
+  extraArgs:
+    - "-config.expand-env=true"
 
 # Service monitor for Prometheus
 serviceMonitor:
