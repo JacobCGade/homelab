@@ -9,9 +9,9 @@ $BASEDIR/certbot certonly \
   --config-dir $BASEDIR/../config \
   --work-dir $BASEDIR/.. \
   --logs-dir $BASEDIR/../logs \
-  --authenticator dns-ionos \
-  --dns-ionos-credentials $BASEDIR/../.secrets/ionos-credentials.ini \
-  --dns-ionos-propagation-seconds {{ propagation_seconds }} \
+  --authenticator dns-cloudflare \
+  --dns-cloudflare-credentials $BASEDIR/../.secrets/cloudflare-credentials.ini \
+  --dns-cloudflare-propagation-seconds {{ propagation_seconds }} \
   --server https://acme-v02.api.letsencrypt.org/directory \
   --agree-tos \
   --non-interactive \

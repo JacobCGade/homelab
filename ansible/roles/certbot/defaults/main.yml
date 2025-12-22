@@ -6,12 +6,11 @@ install_python_packages: true
 # Set certbot python virtual environment
 certbot_venv: /letsencrypt
 
-# dns ionos credentials
-dns_ionos_prefix: ionos-prefix
-dns_ionos_secret: ionos-secret
-dns_ionos_api_endpoint: https://api.hosting.ionos.com
+# Cloudflare API token (set in picluster.yml)
+# cloudflare_api_token: "{{ vault.certmanager.cloudflare.api_token }}"
 
-certbot_email: myemail@mydomain.es
+# Certbot email for Let's Encrypt
+certbot_email: "{{ acme_issuer_email | default('admin@example.com') }}"
 
 # dns propagation in seconds
-propagation_seconds: 300
+propagation_seconds: 120

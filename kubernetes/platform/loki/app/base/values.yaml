@@ -19,7 +19,7 @@ loki:
       ruler: k3s-loki
     type: s3
     s3:
-      endpoint: 10.0.0.11:9091
+      endpoint: https://10.0.0.11:9091
       secretAccessKey: ${MINIO_SECRET_ACCESS_KEY}
       accessKeyId: ${MINIO_ACCESS_KEY_ID}
       s3ForcePathStyle: true
