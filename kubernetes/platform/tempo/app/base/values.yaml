@@ -65,7 +65,7 @@ tempo:
 
   # Extra args to expand environment variables
   extraArgs:
-    - "-config.expand-env=true"
+    config.expand-env: "true"
 
 # Service monitor for Prometheus
 serviceMonitor:
