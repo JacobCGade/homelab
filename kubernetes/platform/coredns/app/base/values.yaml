@@ -1,6 +1,7 @@
 # coredns helm values (base)
+# Optimized for 2-node homelab cluster
 
-replicaCount: 3
+replicaCount: 2
 k8sAppLabelOverride: kube-dns
 serviceAccount:
   create: true

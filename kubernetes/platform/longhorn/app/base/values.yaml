@@ -1,5 +1,17 @@
 # longhorn helm values (base)
+# Optimized for 2-node homelab cluster
 
 # Storage path
 defaultSettings:
   defaultDataPath: "/storage"
+
+# Reduce UI replicas (HA not needed for homelab)
+longhornUI:
+  replicas: 1
+
+# Reduce CSI sidecar replicas (HA not needed for homelab)
+csi:
+  attacherReplicaCount: 1
+  provisionerReplicaCount: 1
+  resizerReplicaCount: 1
+  snapshotterReplicaCount: 1
