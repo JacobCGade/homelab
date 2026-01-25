@@ -7,6 +7,13 @@ metadata:
   annotations:
     cert-manager.io/cluster-issuer: letsencrypt-issuer
     cert-manager.io/common-name: vault.${CLUSTER_DOMAIN}
+    # Required for Bitwarden apps
+    nginx.ingress.kubernetes.io/proxy-body-size: 256m
+    nginx.ingress.kubernetes.io/proxy-read-timeout: "3600"
+    nginx.ingress.kubernetes.io/proxy-send-timeout: "3600"
+    # WebSocket support for live sync
+    nginx.ingress.kubernetes.io/proxy-http-version: "1.1"
+    nginx.ingress.kubernetes.io/upstream-hash-by: "$remote_addr"
 spec:
   ingressClassName: nginx
   tls:
