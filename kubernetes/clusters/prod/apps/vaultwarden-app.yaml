@@ -13,7 +13,7 @@ spec:
   dependsOn:
     - name: longhorn-app
     - name: cert-manager-app
-    - name: nginx-app
+    - name: ingress-nginx-app
   path: ./kubernetes/apps/vaultwarden/app/overlays/prod
   prune: true
   postBuild:
