@@ -457,14 +457,14 @@ kubernetes/platform/longhorn/app/overlays/prod/values.yaml
 ### Access Vault
 ```bash
 # SSH tunnel
-ssh -L 8200:10.0.0.11:8200 root@192.168.0.21
+ssh -L 8200:10.0.0.11:8200 apollo@192.168.0.21
 # Open https://localhost:8200
 
 # Get root token
-ssh -J root@192.168.0.21 root@10.0.0.11 "cat /etc/vault/unseal.json"
+ssh -J root@192.168.0.21 apollo@10.0.0.11 "cat /etc/vault/unseal.json"
 
 # CLI access (from node1)
-ssh -J root@192.168.0.21 root@10.0.0.11
+ssh -J root@192.168.0.21 apollo@10.0.0.11
 export VAULT_ADDR='http://127.0.0.1:8200'
 export VAULT_TOKEN='<root-token>'
 vault status
