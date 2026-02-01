@@ -1,0 +1,62 @@
+# Sure Helm Values - Base Configuration
+
+# Disable built-in database operators (using external PostgreSQL and Redis)
+cnpg:
+  enabled: false
+
+redis:
+  enabled: false
+
+# Use existing secrets for app configuration
+existingSecret: sure-app
+
+# Image configuration
+image:
+  repository: ghcr.io/we-promise/sure
+  tag: "0.6.6"
+  pullPolicy: IfNotPresent
+
+# Rails environment
+rails:
+  env: production
+
+# Web deployment configuration
+web:
+  replicas: 1
+  resources:
+    requests:
+      cpu: 100m
+      memory: 256Mi
+    limits:
+      memory: 512Mi
+
+# Worker (Sidekiq) configuration
+worker:
+  replicas: 1
+  resources:
+    requests:
+      cpu: 50m
+      memory: 128Mi
+    limits:
+      memory: 256Mi
+
+# Service configuration
+service:
+  type: ClusterIP
+  port: 80
+
+# Disable HPA for resource-constrained cluster
+autoscaling:
+  enabled: false
+
+# Security context
+securityContext:
+  runAsUser: 1000
+  runAsGroup: 1000
+  fsGroup: 1000
+
+# Pod security context
+podSecurityContext:
+  runAsNonRoot: true
+  seccompProfile:
+    type: RuntimeDefault

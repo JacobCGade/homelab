@@ -1,0 +1,14 @@
+---
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: sure-cert
+  namespace: sure
+spec:
+  secretName: sure-tls
+  issuerRef:
+    name: letsencrypt-prod
+    kind: ClusterIssuer
+  commonName: finance.${CLUSTER_DOMAIN}
+  dnsNames:
+    - finance.${CLUSTER_DOMAIN}
