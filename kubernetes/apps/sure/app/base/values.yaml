@@ -9,6 +9,16 @@ redis:
 
 redisOperator:
   enabled: false
+  managed:
+    enabled: false
+    image:
+      repository: quay.io/opstree/redis
+      tag: v8.4.0
+    persistence:
+      enabled: false
+  image:
+    repository: quay.io/opstree/redis
+    tag: v8.4.0
 
 # Use existing secrets for app configuration
 existingSecret: sure-app
