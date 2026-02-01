@@ -4,9 +4,6 @@
 cnpg:
   enabled: false
 
-redis:
-  enabled: false
-
 redisOperator:
   enabled: false
   managed:
@@ -22,6 +19,18 @@ redisOperator:
 
 # Use existing secrets for app configuration
 existingSecret: sure-app
+
+# Database configuration - override CNPG defaults
+database:
+  host: sure-postgres
+  port: 5432
+  name: sure
+
+# Redis configuration - use external Redis deployment
+redis:
+  enabled: false
+  host: sure-redis
+  port: 6379
 
 # Image configuration
 image:
