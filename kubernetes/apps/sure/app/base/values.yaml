@@ -3,44 +3,30 @@
 # Disable built-in database operators (using external PostgreSQL and Redis)
 cnpg:
   enabled: false
+  cluster:
+    enabled: false
 
 redisOperator:
   enabled: false
   managed:
     enabled: false
-    image:
-      repository: quay.io/opstree/redis
-      tag: v8.4.0
-    persistence:
-      enabled: false
-  image:
-    repository: quay.io/opstree/redis
-    tag: v8.4.0
 
-# Use existing secrets for app configuration
-existingSecret: sure-app
-
-# Database configuration - override CNPG defaults
-database:
-  host: sure-postgres
-  port: 5432
-  name: sure
-
-# Redis configuration - use external Redis deployment
-redis:
+redisSimple:
   enabled: false
-  host: sure-redis
-  port: 6379
+
+# Rails configuration
+rails:
+  env: production
+  existingSecret: sure-app
+  extraEnv:
+    DATABASE_URL: "postgresql://sure:$(DB_PASSWORD)@sure-postgres.sure.svc.cluster.local:5432/sure?sslmode=prefer"
+    REDIS_URL: "redis://default:$(REDIS_PASSWORD)@sure-redis.sure.svc.cluster.local:6379/0"
 
 # Image configuration
 image:
   repository: ghcr.io/we-promise/sure
   tag: "0.6.6"
   pullPolicy: IfNotPresent
-
-# Rails environment
-rails:
-  env: production
 
 # Web deployment configuration
 web:
