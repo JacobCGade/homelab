@@ -22,6 +22,6 @@ spec:
             pathType: Prefix
             backend:
               service:
-                name: sure-web
+                name: sure
                 port:
                   number: 80
