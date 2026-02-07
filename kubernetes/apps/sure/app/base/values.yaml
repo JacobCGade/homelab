@@ -20,7 +20,7 @@ rails:
   existingSecret: sure-app
   extraEnv:
     DATABASE_URL: "postgresql://sure:$(DB_PASSWORD)@sure-postgres.sure.svc.cluster.local:5432/sure?sslmode=prefer"
-    REDIS_URL: "redis://default:$(REDIS_PASSWORD)@sure-redis.sure.svc.cluster.local:6379/0"
+    REDIS_URL: "redis://:$(REDIS_PASSWORD)@sure-redis.sure.svc.cluster.local:6379/0"
 
 # Image configuration
 image:
