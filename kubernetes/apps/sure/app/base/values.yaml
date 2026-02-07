@@ -25,7 +25,7 @@ rails:
 # Image configuration
 image:
   repository: ghcr.io/we-promise/sure
-  tag: "0.6.6"
+  tag: "0.6.7"
   pullPolicy: IfNotPresent
 
 # Web deployment configuration
