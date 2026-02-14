@@ -63,21 +63,17 @@ spec:
           livenessProbe:
             exec:
               command:
-                - pg_isready
-                - -U
-                - $(POSTGRES_USER)
-                - -d
-                - sure
+                - /bin/sh
+                - -c
+                - pg_isready -U "$POSTGRES_USER" -d sure
             initialDelaySeconds: 30
             periodSeconds: 10
           readinessProbe:
             exec:
               command:
-                - pg_isready
-                - -U
-                - $(POSTGRES_USER)
-                - -d
-                - sure
+                - /bin/sh
+                - -c
+                - pg_isready -U "$POSTGRES_USER" -d sure
             initialDelaySeconds: 5
             periodSeconds: 5
       volumes:
