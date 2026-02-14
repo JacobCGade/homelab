@@ -25,6 +25,7 @@ resources:
   # - minio-app.yaml  # Using external Minio on node1
   # - mongodb-operator-app.yaml
   - nginx-app.yaml
+  - promtail-app.yaml
   # - oauth2-proxy-app.yaml  # Depends on Keycloak which is not deployed
   - system-upgrade-app.yaml
   - tempo-app.yaml

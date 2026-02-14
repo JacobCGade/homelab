@@ -96,8 +96,10 @@ monitoring:
     enabled: false
     grafanaAgent:
       installOperator: false
-  lokiCanary:
-    enabled: false
+
+# Disable canary (deploying Promtail separately)
+lokiCanary:
+  enabled: false
 
 # Disable helm-test
 test:
@@ -108,16 +110,3 @@ chunksCache:
   enabled: false
 resultsCache:
   enabled: false
-
-# Enable Promtail for log collection
-promtail:
-  enabled: true
-  resources:
-    requests:
-      cpu: 50m
-      memory: 64Mi
-    limits:
-      memory: 128Mi
-  config:
-    clients:
-      - url: http://loki-gateway.loki.svc.cluster.local/loki/api/v1/push

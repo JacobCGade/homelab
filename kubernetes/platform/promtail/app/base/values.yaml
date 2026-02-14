@@ -1,0 +1,13 @@
+# Promtail helm values (base)
+# DaemonSet log collector for Loki
+
+config:
+  clients:
+    - url: http://loki-gateway.loki.svc.cluster.local/loki/api/v1/push
+
+resources:
+  requests:
+    cpu: 50m
+    memory: 64Mi
+  limits:
+    memory: 128Mi
