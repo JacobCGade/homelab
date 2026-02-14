@@ -20,6 +20,7 @@ loki:
     type: s3
     s3:
       endpoint: https://s3.homelab.jacobgade.com:9091
+      region: eu-west-1
       secretAccessKey: ${MINIO_SECRET_ACCESS_KEY}
       accessKeyId: ${MINIO_ACCESS_KEY_ID}
       s3ForcePathStyle: true
@@ -49,9 +50,9 @@ singleBinary:
   resources:
     requests:
       cpu: 100m
-      memory: 256Mi
-    limits:
       memory: 512Mi
+    limits:
+      memory: 1Gi
   extraArgs:
     - '-config.expand-env=true'
   extraEnv:
