@@ -83,6 +83,10 @@ vault:
     oauth2:
       client-id: grafana
       client-secret: {{ grafana_client_secret }}
+  # Pi-hole
+  pihole:
+    admin:
+      password: {{ pihole_admin_password }}
   # Certmanager
   certmanager:
     ionos:

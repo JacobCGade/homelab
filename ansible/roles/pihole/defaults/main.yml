@@ -1,0 +1,16 @@
+---
+
+pihole_upstream_dns:
+  - "1.1.1.1"
+  - "1.0.0.1"
+
+pihole_listen_mode: "ALL"
+pihole_web_port: 8080
+pihole_admin_password: ""
+
+# Conditional forwarding for local DNS (Bind9)
+# Format: "enabled,network/CIDR,server#port,domain"
+pihole_rev_servers: []
+
+# Guard path - prevents re-running the installer
+pihole_install_guard: /usr/local/bin/pihole

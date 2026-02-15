@@ -1,0 +1,62 @@
+---
+- name: Create /etc/pihole directory
+  file:
+    path: /etc/pihole
+    state: directory
+    mode: '0755'
+    owner: root
+    group: root
+
+- name: Download Pi-hole installer
+  get_url:
+    url: https://install.pi-hole.net
+    dest: /tmp/pihole-install.sh
+    mode: '0755'
+  when: not pihole_install_guard is file
+
+- name: Install Pi-hole (unattended)
+  command: bash /tmp/pihole-install.sh --unattended
+  args:
+    creates: "{{ pihole_install_guard }}"
+
+# Pi-hole v6 manages pihole.toml itself — use the CLI to set config values
+- name: Configure upstream DNS servers
+  command: pihole-FTL --config dns.upstreams '{{ pihole_upstream_dns | to_json }}'
+  register: dns_upstreams_result
+  changed_when: "'is already set' not in dns_upstreams_result.stdout"
+  notify: restart pihole-FTL
+
+- name: Configure DNS listening mode
+  command: pihole-FTL --config dns.listeningMode '{{ pihole_listen_mode }}'
+  register: listen_mode_result
+  changed_when: "'is already set' not in listen_mode_result.stdout"
+  notify: restart pihole-FTL
+
+- name: Configure conditional forwarding (revServers)
+  command: pihole-FTL --config dns.revServers '{{ pihole_rev_servers | to_json }}'
+  register: rev_servers_result
+  changed_when: "'is already set' not in rev_servers_result.stdout"
+  when: pihole_rev_servers | length > 0
+  notify: restart pihole-FTL
+
+- name: Configure webserver port
+  command: pihole-FTL --config webserver.port '{{ pihole_web_port }}'
+  register: web_port_result
+  changed_when: "'is already set' not in web_port_result.stdout"
+  notify: restart pihole-FTL
+
+- name: Set Pi-hole admin password
+  command: pihole setpassword {{ pihole_admin_password }}
+  changed_when: false
+  no_log: true
+  when: pihole_admin_password | length > 0
+
+- name: Update gravity (blocklists)
+  command: pihole -g
+  changed_when: false
+
+- name: Ensure pihole-FTL is enabled and started
+  systemd:
+    name: pihole-FTL
+    state: started
+    enabled: true

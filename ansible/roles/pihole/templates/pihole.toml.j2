@@ -1,0 +1,16 @@
+# Pi-hole v6 configuration - managed by Ansible
+# {{ ansible_managed }}
+
+[dns]
+  upstreams = [{{ pihole_upstream_dns | map('regex_replace', '^(.*)$', '"\1"') | join(', ') }}]
+  port = 53
+  listeningMode = "{{ pihole_listen_mode }}"
+{% if pihole_rev_servers | length > 0 %}
+  revServers = [{{ pihole_rev_servers | map('regex_replace', '^(.*)$', '"\1"') | join(', ') }}]
+{% endif %}
+
+[webserver]
+  port = "{{ pihole_web_port }}"
+
+[webserver.api]
+  password = ""

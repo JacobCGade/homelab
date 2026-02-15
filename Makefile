@@ -23,6 +23,10 @@ init: os-upgrade nodes-setup external-services configure-os-backup k3s-install k
 ansible-credentials:
 	${RUNNER} ansible-playbook create_vault_credentials.yml
 
+.PHONY: add-vault-credential
+add-vault-credential:
+	${RUNNER} ansible-playbook add_vault_credential.yml -e 'credential_path=$(CRED_PATH)' $(if $(CRED_VALUE),-e 'credential_value=$(CRED_VALUE)')
+
 .PHONY: view-vault-credentials
 view-vault-credentials:
 	${RUNNER} ansible-vault view vars/vault.yml
@@ -82,6 +86,10 @@ external-services-reset:
 .PHONY: openwrt-certbot-tls
 openwrt-certbot-tls:
 	${RUNNER} ansible-playbook generate_gateway_tls_certificate.yml
+
+.PHONY: deploy-pihole
+deploy-pihole:
+	${RUNNER} ansible-playbook deploy_pihole.yml
 
 .PHONY: deploy-monitoring-agent
 deploy-monitoring-agent:

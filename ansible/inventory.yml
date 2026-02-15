@@ -58,3 +58,6 @@ all:
     s3:
       hosts:
         node1:
+    pihole:
+      hosts:
+        node1:

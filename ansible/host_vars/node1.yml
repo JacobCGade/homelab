@@ -49,6 +49,9 @@ bind9_zones:
       - label: minio
         type: A
         rdata: 10.0.0.11
+      - label: pihole
+        type: A
+        rdata: 10.0.0.11
   - name: 0.10.in-addr.arpa
     type: primary
     default_ttl: 600
@@ -71,6 +74,18 @@ bind9_zones:
         type: PTR
         rdata: "node2.{{ dns_domain }}."
 
+########################
+# Pi-hole variables
+########################
+
+bind9_listen_port: 5353
+pihole_upstream_dns:
+  - "1.1.1.1"
+  - "1.0.0.1"
+pihole_rev_servers:
+  - "true,10.0.0.0/24,127.0.0.1#5353,homelab.jacobgade.com"
+pihole_admin_password: "{{ vault.pihole.admin.password }}"
+
 ############################
 # restic backup role variables
 ############################
@@ -92,7 +107,7 @@ fluentbit_inputs: |
       Name tail
       Tag host.*
       DB /run/fluentbit-state.db
-      Path /var/log/auth.log,/var/log/syslog
+      Path /var/log/auth.log,/var/log/syslog,/var/log/pihole/FTL.log
       Parser syslog-rfc3164-nopri
 
 # Fluentbit output

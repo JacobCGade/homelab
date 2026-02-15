@@ -1,0 +1,63 @@
+---
+# Play 1: Move Bind9 to port 5353 to make room for Pi-hole on port 53
+- name: Reconfigure Bind9 to listen on port 5353
+  hosts: dns
+  gather_facts: true
+  tags: [dns]
+  become: true
+  pre_tasks:
+    - name: Include vault variables
+      ansible.builtin.include_vars: "vars/vault.yml"
+      tags: ["always"]
+  roles:
+    - role: ricsanfre.bind9
+  post_tasks:
+    - name: Find stale zone journal files
+      find:
+        paths: /var/lib/bind
+        patterns: "*.jnl"
+      register: jnl_files
+
+    - name: Remove stale zone journal files
+      file:
+        path: "{{ item.path }}"
+        state: absent
+      loop: "{{ jnl_files.files }}"
+      notify: restart bind9
+
+    - name: Remove stale blockinfile block if present
+      blockinfile:
+        path: /etc/bind/named.conf.options
+        marker: "// {mark} ANSIBLE MANAGED - Pi-hole integration"
+        state: absent
+      notify: restart bind9
+
+    - name: Move Bind9 listen-on to port {{ bind9_listen_port }}
+      replace:
+        path: /etc/bind/named.conf.options
+        regexp: 'listen-on\s*(port\s+\d+\s*)?\{'
+        replace: 'listen-on port {{ bind9_listen_port }} {'
+      notify: restart bind9
+
+    - name: Validate Bind9 configuration
+      command: named-checkconf
+      changed_when: false
+
+  handlers:
+    - name: restart bind9
+      systemd:
+        name: bind9
+        state: restarted
+
+# Play 2: Install and configure Pi-hole
+- name: Deploy Pi-hole
+  hosts: pihole
+  gather_facts: true
+  tags: [pihole]
+  become: true
+  pre_tasks:
+    - name: Include vault variables
+      ansible.builtin.include_vars: "vars/vault.yml"
+      tags: ["always"]
+  roles:
+    - role: pihole
